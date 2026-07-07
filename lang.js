@@ -1,4 +1,3 @@
-<script>
 const LANG = {
   en: {
     title: "Aniimo Patch Notes",
@@ -155,4 +154,3 @@ heal: "Soin",
     support: "Support",
   }
 };
-</script>
