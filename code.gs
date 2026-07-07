@@ -72,12 +72,15 @@ function getAniimos() {
   });
 
   const json = JSON.stringify(result);
+console.log("Taille JSON aniimos :", json.length);
 
-  if (json.length < 90000) {
-    cache.put("aniimos", json, 21600);
-  }
+if (json.length < 90000) {
+  cache.put("aniimos", json, 21600);
+} else {
+  console.warn("JSON trop gros pour le cache :", json.length);
+}
 
-  return result;
+return result;
 }
 
 function clearAniimosCache() {
