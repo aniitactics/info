@@ -110,39 +110,42 @@ function createEffectTags(item){
     `;
 }
 
-google.script.run
-.withSuccessHandler(function(data){
+fetch("https://script.google.com/macros/s/AKfycbx3J9PGkdJORbtVCfUTSrjCsTq0MjMIiXtqtEQJF2shSGUuJ7H3FoYYOM0NtQXj47FeoQ/exec?api=aniimos")
+.then(response => response.json())
+.then(function(data){
     aniimos = data;
+
     window.debugAniimoTags = function(name){
-    const aniimo = aniimos.find(a =>
-        a.name.toLowerCase().includes(name.toLowerCase())
-    );
+        const aniimo = aniimos.find(a =>
+            a.name.toLowerCase().includes(name.toLowerCase())
+        );
 
-    if(!aniimo){
-        console.log("Aniimo introuvable :", name);
-        return;
-    }
+        if(!aniimo){
+            console.log("Aniimo introuvable :", name);
+            return;
+        }
 
-    const version = aniimo.current;
+        const version = aniimo.current;
 
-    const allItems = [
-        ...(version.traits || []),
-        ...(version.spells || []),
-        ...(version.ultimate ? [version.ultimate] : [])
-    ];
+        const allItems = [
+            ...(version.traits || []),
+            ...(version.spells || []),
+            ...(version.ultimate ? [version.ultimate] : [])
+        ];
 
-    console.log("ANIIMO :", aniimo.name);
-    console.table(allItems.map(item => ({
-        name: item.name,
-        id: item.spell_id || item.trait_id || item.ultimate_id,
-        bonus: item.bonus,
-        malus: item.malus,
-        heal: item.heal,
-        shield: item.shield,
-        control: item.control,
-        regen_ep: item.regen_ep
-    })));
-};
+        console.log("ANIIMO :", aniimo.name);
+        console.table(allItems.map(item => ({
+            name: item.name,
+            id: item.spell_id || item.trait_id || item.ultimate_id,
+            bonus: item.bonus,
+            malus: item.malus,
+            heal: item.heal,
+            shield: item.shield,
+            control: item.control,
+            regen_ep: item.regen_ep
+        })));
+    };
+
     console.log(aniimos);
     renderSidebar();
     applyLanguage();
@@ -150,14 +153,14 @@ google.script.run
     const searchInput = document.getElementById("searchInput");
     searchInput.addEventListener("input", updateCurrentView);
 })
-.withFailureHandler(function(error){
+.catch(function(error){
     console.error(error);
 
     document.getElementById("aniimoList").innerHTML =
-        "<p style='color:#ff6b6b;'>Erreur serveur :</p><pre style='white-space:pre-wrap;color:#ffb4b4;'>" +
+        "<p style='color:#ff6b6b;'>Erreur de chargement :</p><pre style='white-space:pre-wrap;color:#ffb4b4;'>" +
         error.message +
         "</pre>";
-})
+});
 .getAniimos();
 
 function renderSidebar(search = ""){
