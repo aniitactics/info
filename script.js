@@ -1,4 +1,3 @@
-<script>
 let aniimos = [];
 let selectedAniimoName = "";
 let selectedForm = "base";
@@ -1555,4 +1554,3 @@ window.changeForm = changeForm;
 window.toggleAniilogFilter = toggleAniilogFilter;
 window.resetAniilogFilters = resetAniilogFilters;
 window.showAniilogAniimoById = showAniilogAniimoById;
-</script>
