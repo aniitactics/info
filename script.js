@@ -110,19 +110,16 @@ function createEffectTags(item){
 }
 
 function loadAniimosJsonp() {
-    const API_URL = "https://script.google.com/macros/s/AKfycbxdPQa8q1ad-OOWomUzQApX5aTbM69athu95RggiyGOuz1RD_4wDEeCgHEaA5F80wBOsg/exec?api=aniimos";
-
-    fetch(API_URL)
+    fetch("donnees/aniimos.json?v=2")
         .then(response => {
             if (!response.ok) {
-                throw new Error("Réponse HTTP : " + response.status);
+                throw new Error("Impossible de charger donnees/aniimos.json");
             }
             return response.json();
         })
         .then(data => {
             aniimos = data;
 
-            console.log(aniimos);
             renderSidebar();
             applyLanguage();
 
