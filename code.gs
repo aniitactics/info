@@ -1,9 +1,16 @@
 function doGet(e) {
   if (e && e.parameter && e.parameter.api === "aniimos") {
     const data = getAniimos();
+    const json = JSON.stringify(data);
+
+    if (e.parameter.callback) {
+      return ContentService
+        .createTextOutput(e.parameter.callback + "(" + json + ");")
+        .setMimeType(ContentService.MimeType.JAVASCRIPT);
+    }
 
     return ContentService
-      .createTextOutput(JSON.stringify(data))
+      .createTextOutput(json)
       .setMimeType(ContentService.MimeType.JSON);
   }
 
