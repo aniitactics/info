@@ -160,7 +160,6 @@ fetch("https://script.google.com/macros/s/AKfycbx3J9PGkdJORbtVCfUTSrjCsTq0MjMIiX
         error.message +
         "</pre>";
 });
-.getAniimos();
 
 function renderSidebar(search = ""){
     const query = search.toLowerCase();
