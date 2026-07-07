@@ -155,7 +155,7 @@ function loadAniimosJsonp() {
     };
 
     const script = document.createElement("script");
-    script.src = "https://script.google.com/macros/s/AKfycbx3J9PGkdJORbtVCfUTSrjCsTq0MjMIiXtqtEQJF2shSGUuJ7H3FoYYOM0NtQXj47FeoQ/exec?api=aniimos&callback=" + callbackName;
+    script.src = "https://script.google.com/macros/s/AKfycbxdPQa8q1ad-OOWomUzQApX5aTbM69athu95RggiyGOuz1RD_4wDEeCgHEaA5F80wBOsg/exec" + callbackName;
 
     script.onerror = function() {
         document.getElementById("aniimoList").innerHTML =
