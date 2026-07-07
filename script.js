@@ -109,58 +109,63 @@ function createEffectTags(item){
     `;
 }
 
-fetch("https://script.google.com/macros/s/AKfycbx3J9PGkdJORbtVCfUTSrjCsTq0MjMIiXtqtEQJF2shSGUuJ7H3FoYYOM0NtQXj47FeoQ/exec?api=aniimos")
-.then(response => response.json())
-.then(function(data){
-    aniimos = data;
+function loadAniimosJsonp() {
+    const callbackName = "receiveAniimosData";
 
-    window.debugAniimoTags = function(name){
-        const aniimo = aniimos.find(a =>
-            a.name.toLowerCase().includes(name.toLowerCase())
-        );
+    window[callbackName] = function(data) {
+        aniimos = data;
 
-        if(!aniimo){
-            console.log("Aniimo introuvable :", name);
-            return;
-        }
+        window.debugAniimoTags = function(name){
+            const aniimo = aniimos.find(a =>
+                a.name.toLowerCase().includes(name.toLowerCase())
+            );
 
-        const version = aniimo.current;
+            if(!aniimo){
+                console.log("Aniimo introuvable :", name);
+                return;
+            }
 
-        const allItems = [
-            ...(version.traits || []),
-            ...(version.spells || []),
-            ...(version.ultimate ? [version.ultimate] : [])
-        ];
+            const version = aniimo.current;
 
-        console.log("ANIIMO :", aniimo.name);
-        console.table(allItems.map(item => ({
-            name: item.name,
-            id: item.spell_id || item.trait_id || item.ultimate_id,
-            bonus: item.bonus,
-            malus: item.malus,
-            heal: item.heal,
-            shield: item.shield,
-            control: item.control,
-            regen_ep: item.regen_ep
-        })));
+            const allItems = [
+                ...(version.traits || []),
+                ...(version.spells || []),
+                ...(version.ultimate ? [version.ultimate] : [])
+            ];
+
+            console.log("ANIIMO :", aniimo.name);
+            console.table(allItems.map(item => ({
+                name: item.name,
+                id: item.spell_id || item.trait_id || item.ultimate_id,
+                bonus: item.bonus,
+                malus: item.malus,
+                heal: item.heal,
+                shield: item.shield,
+                control: item.control,
+                regen_ep: item.regen_ep
+            })));
+        };
+
+        console.log(aniimos);
+        renderSidebar();
+        applyLanguage();
+
+        const searchInput = document.getElementById("searchInput");
+        searchInput.addEventListener("input", updateCurrentView);
     };
 
-    console.log(aniimos);
-    renderSidebar();
-    applyLanguage();
+    const script = document.createElement("script");
+    script.src = "https://script.google.com/macros/s/AKfycbx3J9PGkdJORbtVCfUTSrjCsTq0MjMIiXtqtEQJF2shSGUuJ7H3FoYYOM0NtQXj47FeoQ/exec?api=aniimos&callback=" + callbackName;
 
-    const searchInput = document.getElementById("searchInput");
-    searchInput.addEventListener("input", updateCurrentView);
-})
-.catch(function(error){
-    console.error(error);
+    script.onerror = function() {
+        document.getElementById("aniimoList").innerHTML =
+            "<p style='color:#ff6b6b;'>Erreur de chargement :</p><pre style='white-space:pre-wrap;color:#ffb4b4;'>Impossible de charger les données JSONP.</pre>";
+    };
 
-    document.getElementById("aniimoList").innerHTML =
-        "<p style='color:#ff6b6b;'>Erreur de chargement :</p><pre style='white-space:pre-wrap;color:#ffb4b4;'>" +
-        error.message +
-        "</pre>";
-});
+    document.body.appendChild(script);
+}
 
+loadAniimosJsonp();
 function renderSidebar(search = ""){
     const query = search.toLowerCase();
 
