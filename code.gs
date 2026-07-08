@@ -31,13 +31,6 @@ const OLD_VERSION = "cb2";
 const NEW_VERSION = "cb3";
 
 function getAniimos() {
-  const cache = CacheService.getScriptCache();
-  const cached = cache.get("aniimos");
-
-  if (cached) {
-    return JSON.parse(cached);
-  }
-
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
   const aniimos = readSheetAsObjects_(ss, "ANIIMOS");
@@ -54,37 +47,23 @@ function getAniimos() {
   const oldAniimos = aniimos.filter(a => clean_(a.version_id) === OLD_VERSION);
   const newAniimos = aniimos.filter(a => clean_(a.version_id) === NEW_VERSION);
 
-  const result = newAniimos.map(current => {
-    const previous = oldAniimos.find(old =>
-      clean_(old.aniimo_id) === clean_(current.aniimo_id)
-    );
+  return newAniimos
+  .map(current => {
+      const previous = oldAniimos.find(old =>
+        clean_(old.aniimo_id) === clean_(current.aniimo_id)
+      );
 
-    return {
-      id: current.aniimo_id,
-      name: current.name,
-      portrait: current.portrait,
-      type: current.type,
-      role: current.role,
+      return {
+        id: current.aniimo_id,
+        name: current.name,
+        portrait: current.portrait,
+        type: current.type,
+        role: current.role,
 
-      old: previous ? buildAniimoVersion_(previous, spellsIndex, traitsIndex, ultimatesIndex, forms, prismanas) : null,
-      current: buildAniimoVersion_(current, spellsIndex, traitsIndex, ultimatesIndex, forms, prismanas)
-    };
-  });
-
-  const json = JSON.stringify(result);
-console.log("Taille JSON aniimos :", json.length);
-
-if (json.length < 90000) {
-  cache.put("aniimos", json, 21600);
-} else {
-  console.warn("JSON trop gros pour le cache :", json.length);
-}
-
-return result;
-}
-
-function clearAniimosCache() {
-  CacheService.getScriptCache().remove("aniimos");
+        old: previous ? buildAniimoVersion_(previous, spellsIndex, traitsIndex, ultimatesIndex, forms, prismanas) : null,
+        current: buildAniimoVersion_(current, spellsIndex, traitsIndex, ultimatesIndex, forms, prismanas)
+      };
+    });
 }
 
 function hasAniimoChanged_(oldAniimo, newAniimo, forms, prismanas) {
