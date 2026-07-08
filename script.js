@@ -440,51 +440,50 @@ function createEntitySection(title, oldItems, newItems, idKey){
         const newItem = newById[id];
 
         if(!newItem){
-blocks.push(createEntityCard(
-    "removed",
-    oldItem,
-    oldItem.effect_key
-        ? `<p class="removedDescription">${formatText(oldItem.effect_key)}</p>`
-        : "",
-    "oldBlock"
-));
-} else if(hasEntityChanged(oldItem, newItem)){
-    blocks.push(createEntityCard(
-    "modified",
-    newItem,
-    createChangeList(oldItem, newItem) + createDescriptionCompare(oldItem, newItem),
-    "modifiedBlock"
-));
-}
-        
+            blocks.push(createEntityCard(
+                "removed",
+                oldItem,
+                getLocalizedDescription(oldItem)
+                    ? `<p class="removedDescription">${formatText(getLocalizedDescription(oldItem))}</p>`
+                    : "",
+                "oldBlock"
+            ));
+        } else if(hasEntityChanged(oldItem, newItem)){
+            blocks.push(createEntityCard(
+                "modified",
+                newItem,
+                createChangeList(oldItem, newItem) + createDescriptionCompare(oldItem, newItem),
+                "modifiedBlock"
+            ));
+        }
     });
 
     newItems.forEach(newItem => {
         const id = newItem[idKey];
 
         if(!oldById[id]){
-blocks.push(createEntityCard(
-    "new",
-    newItem,
-    newItem.effect_key
-        ? `<p>${formatText(newItem.effect_key)}</p>`
-        : "",
-    "newBlock"
-));
-}
+            blocks.push(createEntityCard(
+                "new",
+                newItem,
+                getLocalizedDescription(newItem)
+                    ? `<p>${formatText(getLocalizedDescription(newItem))}</p>`
+                    : "",
+                "newBlock"
+            ));
+        }
     });
 
     if(blocks.length === 0) return "";
 
     return `
-    <section class="infoCard entitySection">
-        <h3>${t(title)}</h3>
+        <section class="infoCard entitySection">
+            <h3>${t(title)}</h3>
 
-        <div class="entityGrid">
-            ${blocks.join("")}
-        </div>
-    </section>
-`;
+            <div class="entityGrid">
+                ${blocks.join("")}
+            </div>
+        </section>
+    `;
 }
 
 function indexById(items, idKey){
@@ -1600,3 +1599,11 @@ window.changeForm = changeForm;
 window.toggleAniilogFilter = toggleAniilogFilter;
 window.resetAniilogFilters = resetAniilogFilters;
 window.showAniilogAniimoById = showAniilogAniimoById;
+
+function toggleSidebar(){
+    document.body.classList.toggle("sidebarOpen");
+}
+
+function closeSidebar(){
+    document.body.classList.remove("sidebarOpen");
+}
